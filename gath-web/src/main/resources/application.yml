@@ -1,0 +1,59 @@
+server:
+  port: 9091
+  connection-timeout: 50         # 连接超时时间  
+  max-http-header-size: 2048     # HTTP消息头的最大大小（以字节为单位）
+  server-header: undertow        # 服务器的名称
+  use-forward-headers: false     # 是否允许重定向
+  compression:
+    enabled: true                # 是否启用响应压缩
+    min-response-size: 2048      # 执行压缩所需的最小响应大小
+    
+  http2:                         # 是否启用HTTP2
+    enabled: true  
+    
+  servlet:
+    context-path: /gath
+    
+  undertow:
+    record-request-time: false   # 是否记录请求响应时间
+    eager-filter-init: true      # 启动时是否应初始化servlet筛选器
+    io-threads: 16               # 设置IO线程数, 它主要执行非阻塞的任务,它们会负责多个连接, 默认设置每个CPU核心一个线程,不要设置过大，如果过大，启动项目会报错：打开文件数过多
+    worker-threads: 256          # 阻塞任务线程池, 当执行类似servlet请求阻塞IO操作, undertow会从这个线程池中取得线程,它的值设置取决于系统线程执行任务的阻塞系数，默认值是IO线程数*8
+    buffer-size: 1024            # 以下的配置会影响buffer,这些buffer会用于服务器连接的IO操作,有点类似netty的池化内存管理,每块buffer的空间大小,越小的空间被利用越充分，不要设置太大，以免影响其他应用，合适即可
+    direct-buffers: true         # 是否分配的直接内存(NIO直接分配的堆外内存)
+    accesslog:
+      enabled: true
+      rotate: true
+      suffix: log
+      dir: D:\undertow-accesslog
+      pattern: "%v %a %l %u %I [%{time,yyyy-MM-dd HH:mm:ss.S z}] %m %U %q %s %D %b %{i,X-B3-TraceId},%{i,X-B3-SpanId} %{i,X-Real-IP} %{i,Referer} %{i,User-Agent} %{i,Platform}"
+spring:
+  profiles:
+    active:
+    - dev
+  http:
+    encoding:
+      enabled: true
+      charset: UTF-8
+      force-response: true       # 强制编码到HTTP响应上配置的字符集
+      
+  messages:
+    encoding: UTF-8   
+    
+  jackson:
+    date-format: yyyy-MM-dd HH：mm：ss
+    time-zone: GMT+8
+    
+  servlet:
+    multipart:
+      enabled: true              # 启用对多部分上传的支持
+      file-size-threshold: 64MB  # 将文件写入磁盘的阈值。值可以使用后缀MB或KB
+      max-file-size: 128MB       # 最大文件大小,值可以使用后缀MB或KB
+      max-request-size: 256MB    # 最大请求大小,值可以使用后缀MB或KB
+      
+logging:
+  level: 
+    com.kabouros.gath: info
+         
+      
+      

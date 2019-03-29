@@ -1,0 +1,3 @@
+server:
+  undertow:
+    record-request-time: true    # 是否记录请求响应时间
